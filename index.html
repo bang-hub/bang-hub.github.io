@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>얼간이와 난쟁이</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 헤더 */
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            border-bottom: 3px solid #ffd700;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        /* 메인 컨테이너 */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* 사이드바 (리더보드) */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            max-height: calc(100vh - 200px);
+        }
+
+        .sidebar h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .leaderboard-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(5px);
+        }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            font-size: 1.1em;
+            min-width: 30px;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .leaderboard-level {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 게임 영역 */
+        .game-area {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-area h2 {
+            color: #667eea;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        /* 쿠키 버튼 */
+        .cookie-button {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #f4d03f, #d4a017);
+            border: 5px solid #8b7500;
+            cursor: pointer;
+            font-size: 3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.1s;
+            margin: 20px auto;
+            user-select: none;
+        }
+
+        .cookie-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .cookie-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 획득 쿠키 표시 */
+        .cookie-gain {
+            position: fixed;
+            pointer-events: none;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.5em;
+            animation: floatUp 1s ease-out forwards;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes floatUp {
+            to {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+        }
+
+        /* 통계 섹션 */
+        .stats {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        /* 레벨업 버튼 */
+        .upgrade-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .upgrade-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .upgrade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .upgrade-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .upgrade-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .upgrade-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .upgrade-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .upgrade-cost {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                max-height: 300px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .cookie-button {
+                width: 120px;
+                height: 120px;
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐵 얼간이와 난쟁이 🐵</h1>
+    </div>
+
+    <div class="container">
+        <!-- 사이드바 (리더보드) -->
+        <div class="sidebar">
+            <h2>📊 리더보드</h2>
+            <div id="leaderboard"></div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="main-content">
+            <!-- 게임 영역 -->
+            <div class="game-area">
+                <h2>🐵 원숭이를 클릭하세요!</h2>
+                <button class="cookie-button" id="cookieBtn">🐵</button>
+                <p style="color: #667eea; font-size: 1.2em;">클릭당 획득: <span id="cookiePerClick">1</span>마리</p>
+            </div>
+
+            <!-- 통계 -->
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">총 원숭이</div>
+                    <div class="stat-value" id="totalCookies">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">현재 레벨</div>
+                    <div class="stat-value" id="level">1</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">클릭 횟수</div>
+                    <div class="stat-value" id="clickCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">초당 원숭이</div>
+                    <div class="stat-value" id="cps">0</div>
+                </div>
+            </div>
+
+            <!-- 업그레이드 섹션 -->
+            <div class="upgrade-section">
+                <h3>⭐ 레벨업 및 업그레이드</h3>
+                <div class="upgrade-grid">
+                    <button class="upgrade-button" id="levelUpBtn">
+                        레벨업<br>
+                        <span class="upgrade-cost">필요: 100 🐵</span>
+                    </button>
+                    <button class="upgrade-button" id="autoBtn">
+                        알바고용 (초당 1)<br>
+                        <span class="upgrade-cost">필요: 200 🐵</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 게임 상태
+        const gameState = {
+            totalCookies: 0,
+            level: 1,
+            clickCount: 0,
+            cookiePerClick: 1,
+            autoProduction: 0,
+            autoProductionCost: 200,
+            playerName: '플레이어' + Math.floor(Math.random() * 1000),
+            color: '#' + Math.floor(Math.random()*16777215).toString(16)
+        };
+
+        // DOM 요소
+        const cookieBtn = document.getElementById('cookieBtn');
+        const totalCookiesDisplay = document.getElementById('totalCookies');
+        const levelDisplay = document.getElementById('level');
+        const clickCountDisplay = document.getElementById('clickCount');
+        const cookiePerClickDisplay = document.getElementById('cookiePerClick');
+        const cpsDisplay = document.getElementById('cps');
+        const leaderboardContainer = document.getElementById('leaderboard');
+
+        // 클릭 이벤트
+        cookieBtn.addEventListener('click', function(e) {
+            const gain = gameState.cookiePerClick;
+            gameState.totalCookies += gain;
+            gameState.clickCount++;
+
+            // 쿠키 획득 애니메이션
+            const rect = cookieBtn.getBoundingClientRect();
+            const floatingText = document.createElement('div');
+            floatingText.className = 'cookie-gain';
+            floatingText.textContent = '+' + gain;
+            floatingText.style.left = (rect.left + rect.width / 2) + 'px';
+            floatingText.style.top = (rect.top + rect.height / 2) + 'px';
+            document.body.appendChild(floatingText);
+
+            setTimeout(() => floatingText.remove(), 1000);
+
+            updateDisplay();
+            updateLeaderboard();
+        });
+
+        // 레벨업 비용 계산 함수
+        function getLevelUpCost() {
+            return gameState.level * 100;
+        }
+
+        // 알바고용 비용 계산 함수
+        function getAutoProductionCost() {
+            return gameState.autoProductionCost;
+        }
+
+        // 레벨업 버튼
+        document.getElementById('levelUpBtn').addEventListener('click', function() {
+            const cost = getLevelUpCost();
+            if (gameState.totalCookies >= cost) {
+                gameState.totalCookies -= cost;
+                gameState.level++;
+                gameState.cookiePerClick = 1 + (gameState.level - 1) * 5;
+
+                const levelUpText = document.createElement('div');
+                levelUpText.className = 'cookie-gain';
+                levelUpText.textContent = '⭐ 레벨UP!';
+                levelUpText.style.left = '50%';
+                levelUpText.style.top = '30%';
+                levelUpText.style.color = '#ff69b4';
+                document.body.appendChild(levelUpText);
+                setTimeout(() => levelUpText.remove(), 1000);
+
+                updateDisplay();
+                updateLeaderboard();
+            }
+        });
+
+        // 자동 생산 업그레이드
+        document.getElementById('autoBtn').addEventListener('click', function() {
+            const cost = getAutoProductionCost();
+            if (gameState.totalCookies >= cost) {
+                gameState.totalCookies -= cost;
+                if (gameState.autoProduction === 0) {
+                    gameState.autoProduction = 1;
+                } else {
+                    gameState.autoProduction *= 2;
+                }
+                gameState.autoProductionCost = Math.floor(gameState.autoProductionCost * 5);
+                updateDisplay();
+                updateLeaderboard();
+            }
+        });
+
+        // 자동 생산
+        setInterval(() => {
+            gameState.totalCookies += gameState.autoProduction;
+            updateDisplay();
+            updateLeaderboard();
+        }, 1000);
+
+        // 화면 업데이트
+        function updateDisplay() {
+            totalCookiesDisplay.textContent = Math.floor(gameState.totalCookies);
+            levelDisplay.textContent = gameState.level;
+            clickCountDisplay.textContent = gameState.clickCount;
+            cookiePerClickDisplay.textContent = gameState.cookiePerClick;
+            cpsDisplay.textContent = gameState.autoProduction;
+
+            // 버튼 비용 및 활성화/비활성화 업데이트
+            const levelUpCost = getLevelUpCost();
+            const autoProductionCost = getAutoProductionCost();
+            document.getElementById('levelUpBtn').innerHTML = `
+                레벨업<br>
+                <span class="upgrade-cost">필요: ${levelUpCost} 🐵</span>
+            `;
+            document.getElementById('autoBtn').innerHTML = `
+                알바고용 (초당 1)<br>
+                <span class="upgrade-cost">필요: ${autoProductionCost} 🐵</span>
+            `;
+            document.getElementById('levelUpBtn').disabled = gameState.totalCookies < levelUpCost;
+            document.getElementById('autoBtn').disabled = gameState.totalCookies < autoProductionCost;
+        }
+
+        // 리더보드 업데이트
+        function updateLeaderboard() {
+            const players = JSON.parse(localStorage.getItem('players')) || [];
+
+            // 현재 플레이어 찾기 및 업데이트
+            let currentPlayerIndex = players.findIndex(p => p.name === gameState.playerName);
+            if (currentPlayerIndex === -1) {
+                players.push({
+                    name: gameState.playerName,
+                    cookies: gameState.totalCookies
+                });
+            } else {
+                players[currentPlayerIndex].cookies = gameState.totalCookies;
+            }
+
+            // 원숭이 개수 순으로 정렬
+            players.sort((a, b) => b.cookies - a.cookies);
+
+            // 상위 10명만 유지
+            if (players.length > 10) {
+                players = players.slice(0, 10);
+            }
+
+            localStorage.setItem('players', JSON.stringify(players));
+
+            // 리더보드 표시
+            leaderboardContainer.innerHTML = '';
+            players.forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <span class="leaderboard-rank">#${index + 1}</span>
+                    <span class="leaderboard-name">${player.name}</span>
+                    <span class="leaderboard-level">${Math.floor(player.cookies)} 🐵</span>
+                `;
+                leaderboardContainer.appendChild(item);
+            });
+        }
+
+        // 초기 실행
+        updateDisplay();
+        updateLeaderboard();
+    </script>
+</body>
+</html>
