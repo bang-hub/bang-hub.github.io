@@ -308,7 +308,7 @@
                     <div class="stat-value" id="totalCookies">0</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-label">현재 레벨</div>
+                    <div class="stat-label">클릭당 원숭이</div>
                     <div class="stat-value" id="level">1</div>
                 </div>
                 <div class="stat-item">
@@ -383,7 +383,7 @@
 
         // 레벨업 비용 계산 함수
         function getLevelUpCost() {
-            return gameState.level * 100;
+            return Math.floor(100 * Math.pow(5, gameState.level - 1));
         }
 
         // 알바고용 비용 계산 함수
@@ -391,13 +391,19 @@
             return gameState.autoProductionCost;
         }
 
+        // 레벨업 비용 및 증가량
+        const levelIncrements = [1, 3, 5, 10, 20, 50, 110];
+
         // 레벨업 버튼
         document.getElementById('levelUpBtn').addEventListener('click', function() {
             const cost = getLevelUpCost();
             if (gameState.totalCookies >= cost) {
                 gameState.totalCookies -= cost;
                 gameState.level++;
-                gameState.cookiePerClick = 1 + (gameState.level - 1) * 5;
+                const incrementIndex = gameState.level - 2;
+                if (incrementIndex >= 0 && incrementIndex < levelIncrements.length) {
+                    gameState.cookiePerClick += levelIncrements[incrementIndex];
+                }
 
                 const levelUpText = document.createElement('div');
                 levelUpText.className = 'cookie-gain';
@@ -439,7 +445,7 @@
         // 화면 업데이트
         function updateDisplay() {
             totalCookiesDisplay.textContent = Math.floor(gameState.totalCookies);
-            levelDisplay.textContent = gameState.level;
+            levelDisplay.textContent = gameState.cookiePerClick;
             clickCountDisplay.textContent = gameState.clickCount;
             cookiePerClickDisplay.textContent = gameState.cookiePerClick;
             cpsDisplay.textContent = gameState.autoProduction;
