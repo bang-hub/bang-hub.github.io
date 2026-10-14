@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>얼간이와 난쟁이 - 클리커 게임</title>
+    <title>얼간이와 난쟁이</title>
     <style>
         * {
             margin: 0;
@@ -14,235 +14,88 @@
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* 헤더 */
         .header {
             background: rgba(0, 0, 0, 0.3);
-            padding: 20px;
+            padding: 12px 20px;
             text-align: center;
             color: white;
             border-bottom: 3px solid #ffd700;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-shrink: 0;
         }
 
         .header h1 {
-            font-size: 3em;
+            font-size: 2em;
             font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: 2px;
-            flex: 1;
+            letter-spacing: 1px;
         }
 
-        .user-info {
+        /* 메인 컨테이너 */
+        .container {
             display: flex;
-            align-items: center;
+            flex: 1;
             gap: 15px;
-            padding-right: 20px;
-        }
-
-        .user-info span {
-            font-size: 1.1em;
-        }
-
-        .logout-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .logout-btn:hover {
-            background: #ff5252;
-            transform: scale(1.05);
-        }
-
-        /* 로그인/회원가입 페이지 */
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .auth-box {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .auth-box h2 {
-            color: #667eea;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 2em;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            color: #333;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
-        }
-
-        .form-group input::placeholder {
-            color: #999;
-        }
-
-        .auth-button {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 15px;
-        }
-
-        .auth-button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .auth-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .toggle-text {
-            text-align: center;
-            color: #666;
-            margin-top: 20px;
-        }
-
-        .toggle-text button {
-            background: none;
-            border: none;
-            color: #667eea;
-            cursor: pointer;
-            font-weight: bold;
-            text-decoration: underline;
-        }
-
-        .toggle-text button:hover {
-            color: #764ba2;
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        .error-message.show {
-            display: block;
-        }
-
-        /* 게임 페이지 */
-        .game-container {
-            display: flex;
-            flex: 1;
-            gap: 20px;
-            padding: 20px;
-            max-width: 1400px;
+            padding: 15px;
+            max-width: 100%;
             margin: 0 auto;
             width: 100%;
-        }
-
-        .game-container {
-            display: none;
-        }
-
-        .game-container.active {
-            display: flex;
-        }
-
-        .auth-container {
-            display: flex;
-        }
-
-        .auth-container.hidden {
-            display: none;
+            overflow: hidden;
         }
 
         /* 사이드바 (리더보드) */
         .sidebar {
-            width: 280px;
+            width: 220px;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            overflow-y: auto;
-            max-height: calc(100vh - 200px);
+            overflow: hidden;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar h2 {
             color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-size: 1.2em;
             border-bottom: 2px solid #667eea;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        #leaderboard {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         .leaderboard-item {
-            padding: 12px;
-            margin-bottom: 8px;
+            padding: 8px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border-radius: 8px;
+            border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
+            font-size: 0.85em;
+            flex-shrink: 0;
         }
 
         .leaderboard-item:hover {
             transform: translateX(5px);
-        }
-
-        .leaderboard-item.current-user {
-            background: linear-gradient(135deg, #ffd700 0%, #ff9500 100%);
         }
 
         .leaderboard-rank {
@@ -268,14 +121,16 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            overflow: hidden;
+            min-width: 0;
         }
 
         /* 게임 영역 */
         .game-area {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 40px;
+            padding: 20px;
             text-align: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             flex: 1;
@@ -283,30 +138,37 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 0;
         }
 
         .game-area h2 {
             color: #667eea;
-            font-size: 1.8em;
-            margin-bottom: 20px;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+
+        .game-area p {
+            font-size: 0.95em;
+            margin: 5px 0;
         }
 
         /* 쿠키 버튼 */
         .cookie-button {
-            width: 150px;
-            height: 150px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #f4d03f, #d4a017);
             border: 5px solid #8b7500;
             cursor: pointer;
-            font-size: 3em;
+            font-size: 4.5em;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(0, 0, 0, 0.2);
             transition: all 0.1s;
-            margin: 20px auto;
+            margin: 10px auto;
             user-select: none;
+            flex-shrink: 0;
         }
 
         .cookie-button:hover {
@@ -341,29 +203,30 @@
         .stats {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 20px;
+            padding: 12px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
         }
 
         .stat-item {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 8px;
+            border-radius: 8px;
             text-align: center;
         }
 
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.7em;
             opacity: 0.9;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .stat-value {
-            font-size: 2em;
+            font-size: 1.1em;
             font-weight: bold;
         }
 
@@ -371,30 +234,31 @@
         .upgrade-section {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 15px;
-            padding: 20px;
+            padding: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
         }
 
         .upgrade-section h3 {
             color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+            margin-bottom: 8px;
+            font-size: 1em;
         }
 
         .upgrade-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
         }
 
         .upgrade-button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.85em;
             font-weight: bold;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -415,37 +279,13 @@
         }
 
         .upgrade-cost {
-            font-size: 0.9em;
+            font-size: 0.75em;
             opacity: 0.9;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
 
         /* 반응형 디자인 */
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .user-info {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .game-container {
+            .container {
                 flex-direction: column;
             }
 
@@ -454,388 +294,91 @@
                 max-height: 300px;
             }
 
-            .cookie-button {
-                width: 120px;
-                height: 120px;
+            .header h1 {
                 font-size: 2em;
             }
 
-            .auth-box {
-                padding: 30px 20px;
+            .cookie-button {
+                width: 200px;
+                height: 200px;
+                font-size: 4em;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 로그인/회원가입 페이지 -->
-    <div class="auth-container" id="authContainer">
-        <div class="auth-box">
-            <h2>🐵 얼간이와 난쟁이</h2>
-
-            <!-- 로그인 폼 -->
-            <form id="loginForm" class="login-form">
-                <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">로그인</h3>
-                <div class="error-message" id="loginError"></div>
-
-                <div class="form-group">
-                    <label>사용자명</label>
-                    <input type="text" id="loginUsername" placeholder="사용자명 입력" required>
-                </div>
-
-                <div class="form-group">
-                    <label>비밀번호</label>
-                    <input type="password" id="loginPassword" placeholder="비밀번호 입력" required>
-                </div>
-
-                <button type="submit" class="auth-button">로그인</button>
-            </form>
-
-            <!-- 회원가입 폼 -->
-            <form id="registerForm" class="register-form" style="display: none;">
-                <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">회원가입</h3>
-                <div class="error-message" id="registerError"></div>
-
-                <div class="form-group">
-                    <label>사용자명</label>
-                    <input type="text" id="registerUsername" placeholder="사용자명 입력 (3-20자)" required>
-                </div>
-
-                <div class="form-group">
-                    <label>비밀번호</label>
-                    <input type="password" id="registerPassword" placeholder="비밀번호 입력 (최소 6자)" required>
-                </div>
-
-                <div class="form-group">
-                    <label>비밀번호 확인</label>
-                    <input type="password" id="registerPasswordConfirm" placeholder="비밀번호 다시 입력" required>
-                </div>
-
-                <button type="submit" class="auth-button">회원가입</button>
-            </form>
-
-            <div class="toggle-text">
-                <span id="toggleText">계정이 없으신가요?</span>
-                <button type="button" id="toggleFormBtn">회원가입</button>
-            </div>
-        </div>
+    <div class="header">
+        <h1>🐵 얼간이와 난쟁이 🐵</h1>
     </div>
 
-    <!-- 게임 페이지 -->
-    <div id="gameContainer" class="game-container">
-        <!-- 헤더 -->
-        <div class="header" style="position: absolute; top: 0; left: 0; right: 0; width: 100%; z-index: 10;">
-            <h1>🐵 얼간이와 난쟁이 🐵</h1>
-            <div class="user-info">
-                <span>👤 <strong id="currentUsername">플레이어</strong></span>
-                <button class="logout-btn" id="logoutBtn">로그아웃</button>
-            </div>
+    <div class="container">
+        <!-- 사이드바 (리더보드) -->
+        <div class="sidebar">
+            <h2>📊 리더보드</h2>
+            <div id="leaderboard"></div>
         </div>
 
-        <div style="padding-top: 120px; display: flex; flex: 1; gap: 20px; width: 100%; max-width: 1400px; margin: 0 auto; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
-            <!-- 사이드바 (리더보드) -->
-            <div class="sidebar">
-                <h2>📊 리더보드</h2>
-                <div id="leaderboard"></div>
+        <!-- 메인 콘텐츠 -->
+        <div class="main-content">
+            <!-- 게임 영역 -->
+            <div class="game-area">
+                <h2>🐵 원숭이를 클릭하세요!</h2>
+                <button class="cookie-button" id="cookieBtn">🐵</button>
+                <p style="color: #667eea; font-size: 1.2em;">클릭당 획득: <span id="cookiePerClick">1</span>마리</p>
             </div>
 
-            <!-- 메인 콘텐츠 -->
-            <div class="main-content">
-                <!-- 게임 영역 -->
-                <div class="game-area">
-                    <h2>🐵 원숭이를 클릭하세요!</h2>
-                    <button class="cookie-button" id="cookieBtn">🐵</button>
-                    <p style="color: #667eea; font-size: 1.2em;">클릭당 획득: <span id="cookiePerClick">1</span>마리</p>
+            <!-- 통계 -->
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">총 원숭이</div>
+                    <div class="stat-value" id="totalCookies">0</div>
                 </div>
-
-                <!-- 통계 -->
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-label">총 원숭이</div>
-                        <div class="stat-value" id="totalCookies">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">클릭당 원숭이</div>
-                        <div class="stat-value" id="level">1</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">클릭 횟수</div>
-                        <div class="stat-value" id="clickCount">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">초당 원숭이</div>
-                        <div class="stat-value" id="cps">0</div>
-                    </div>
+                <div class="stat-item">
+                    <div class="stat-label">클릭당 원숭이</div>
+                    <div class="stat-value" id="level">1</div>
                 </div>
+                <div class="stat-item">
+                    <div class="stat-label">클릭 횟수</div>
+                    <div class="stat-value" id="clickCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">초당 원숭이</div>
+                    <div class="stat-value" id="cps">0</div>
+                </div>
+            </div>
 
-                <!-- 업그레이드 섹션 -->
-                <div class="upgrade-section">
-                    <h3>⭐ 레벨업 및 업그레이드</h3>
-                    <div class="upgrade-grid">
-                        <button class="upgrade-button" id="levelUpBtn">
-                            레벨업<br>
-                            <span class="upgrade-cost">필요: 100 🐵</span>
-                        </button>
-                        <button class="upgrade-button" id="autoBtn">
-                            알바고용 (초당 1)<br>
-                            <span class="upgrade-cost">필요: 200 🐵</span>
-                        </button>
-                    </div>
+            <!-- 업그레이드 섹션 -->
+            <div class="upgrade-section">
+                <h3>⭐ 레벨업 및 업그레이드</h3>
+                <div class="upgrade-grid">
+                    <button class="upgrade-button" id="levelUpBtn">
+                        레벨업<br>
+                        <span class="upgrade-cost">필요: 100 🐵</span>
+                    </button>
+                    <button class="upgrade-button" id="autoBtn">
+                        알바고용 (초당 1)<br>
+                        <span class="upgrade-cost">필요: 200 🐵</span>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ===== API 호출 함수 =====
-        const API = {
-            async register(username, password, passwordConfirm) {
-                try {
-                    const response = await fetch('/.netlify/functions/auth', {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'register', username, password, passwordConfirm })
-                    });
-                    return await response.json();
-                } catch (error) {
-                    console.error('Register error:', error);
-                    return { success: false, error: '네트워크 오류가 발생했습니다' };
-                }
-            },
-
-            async login(username, password) {
-                try {
-                    const response = await fetch('/.netlify/functions/auth', {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'login', username, password })
-                    });
-                    return await response.json();
-                } catch (error) {
-                    console.error('Login error:', error);
-                    return { success: false, error: '네트워크 오류가 발생했습니다' };
-                }
-            },
-
-            async getLeaderboard() {
-                try {
-                    const response = await fetch('/.netlify/functions/leaderboard', {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'get' })
-                    });
-                    const data = await response.json();
-                    return data.leaderboard || [];
-                } catch (error) {
-                    console.error('Leaderboard error:', error);
-                    return [];
-                }
-            },
-
-            async updateLeaderboard(username, gameState) {
-                try {
-                    const response = await fetch('/.netlify/functions/leaderboard', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            action: 'update',
-                            username,
-                            totalCookies: gameState.totalCookies,
-                            level: gameState.cookiePerClick,
-                            clickCount: gameState.clickCount,
-                            cookiePerClick: gameState.cookiePerClick,
-                            autoProduction: gameState.autoProduction,
-                            autoProductionCost: gameState.autoProductionCost
-                        })
-                    });
-                    return await response.json();
-                } catch (error) {
-                    console.error('Update error:', error);
-                    return { success: false };
-                }
-            },
-
-            async getPlayerData(username) {
-                try {
-                    const response = await fetch('/.netlify/functions/leaderboard', {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'getPlayerData', username })
-                    });
-                    const data = await response.json();
-                    return data.data || null;
-                } catch (error) {
-                    console.error('Get player data error:', error);
-                    return null;
-                }
-            }
+        // 게임 상태
+        const gameState = {
+            totalCookies: 0,
+            level: 1,
+            clickCount: 0,
+            cookiePerClick: 1,
+            autoProduction: 0,
+            autoProductionCost: 200,
+            autoUpgradeCount: 0,
+            playerName: '플레이어' + Math.floor(Math.random() * 1000),
+            color: '#' + Math.floor(Math.random()*16777215).toString(16)
         };
 
-        // ===== 게임 상태 관리 =====
-        class GameStateManager {
-            constructor(username) {
-                this.username = username;
-                this.defaultState = {
-                    totalCookies: 0,
-                    level: 1,
-                    clickCount: 0,
-                    cookiePerClick: 1,
-                    autoProduction: 0,
-                    autoProductionCost: 200
-                };
-                this.state = { ...this.defaultState };
-                this.lastSyncTime = 0;
-                this.syncInterval = 3000;
-            }
-
-            setState(data) {
-                this.state = { ...data };
-            }
-
-            get(key) {
-                return this.state[key];
-            }
-
-            set(key, value) {
-                this.state[key] = value;
-                this.syncToServer();
-            }
-
-            increment(key, amount) {
-                this.state[key] = (this.state[key] || 0) + amount;
-                this.syncToServer();
-            }
-
-            update(updates) {
-                Object.assign(this.state, updates);
-                this.syncToServer();
-            }
-
-            async syncToServer() {
-                const now = Date.now();
-                if (now - this.lastSyncTime < this.syncInterval) {
-                    return;
-                }
-
-                this.lastSyncTime = now;
-                await API.updateLeaderboard(this.username, this.state);
-            }
-
-            async loadFromServer() {
-                const data = await API.getPlayerData(this.username);
-                if (data) {
-                    this.setState(data);
-                }
-            }
-        }
-
-        // ===== UI 관리 =====
-        let gameStateManager = null;
-        let currentUsername = null;
-
-        const authContainer = document.getElementById('authContainer');
-        const gameContainer = document.getElementById('gameContainer');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const toggleFormBtn = document.getElementById('toggleFormBtn');
-        const toggleText = document.getElementById('toggleText');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const currentUsernameDisplay = document.getElementById('currentUsername');
-
-        function showLoginPage() {
-            authContainer.classList.remove('hidden');
-            gameContainer.classList.remove('active');
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            toggleText.textContent = '계정이 없으신가요?';
-            toggleFormBtn.textContent = '회원가입';
-            currentUsername = null;
-        }
-
-        async function showGamePage() {
-            authContainer.classList.add('hidden');
-            gameContainer.classList.add('active');
-            currentUsernameDisplay.textContent = currentUsername;
-
-            await gameStateManager.loadFromServer();
-            updateDisplay();
-            updateLeaderboard();
-        }
-
-        toggleFormBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (loginForm.style.display !== 'none') {
-                loginForm.style.display = 'none';
-                registerForm.style.display = 'block';
-                toggleText.textContent = '이미 계정이 있으신가요?';
-                toggleFormBtn.textContent = '로그인';
-            } else {
-                loginForm.style.display = 'block';
-                registerForm.style.display = 'none';
-                toggleText.textContent = '계정이 없으신가요?';
-                toggleFormBtn.textContent = '회원가입';
-            }
-        });
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
-            const button = loginForm.querySelector('button');
-
-            button.disabled = true;
-            const result = await API.login(username, password);
-
-            if (result.success) {
-                errorDiv.classList.remove('show');
-                currentUsername = username;
-                gameStateManager = new GameStateManager(username);
-                await gameStateManager.loadFromServer();
-                loginForm.reset();
-                await showGamePage();
-            } else {
-                errorDiv.textContent = result.error;
-                errorDiv.classList.add('show');
-            }
-
-            button.disabled = false;
-        });
-
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('registerUsername').value;
-            const password = document.getElementById('registerPassword').value;
-            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
-            const errorDiv = document.getElementById('registerError');
-            const button = registerForm.querySelector('button');
-
-            if (password !== passwordConfirm) {
-                errorDiv.textContent = '비밀번호가 일치하지 않습니다';
-                errorDiv.classList.add('show');
-                return;
-            }
-
-            button.disabled = true;
-            const result = await API.register(username, password, passwordConfirm);
-
-            if (result.success) {
-                errorDiv.classList.remove('show');
-                const loginResult = await API.login(username, password);
-                if (loginResult.success) {
-                    currentUsername = username;
-                    gameStateManager = new GameStateManager(username);
-                    registerForm.reset();
-                    await showGamePage();
-                }
-            } else {
-                errorDiv.textContent = result.error;
-                errorDiv.classList.add('show');
-            }
-
-            button.disabled = false;
-        });
-
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('game_current_user');
-            showLoginPage();
-        });
-
-        // ===== 게임 로직 =====
+        // DOM 요소
         const cookieBtn = document.getElementById('cookieBtn');
         const totalCookiesDisplay = document.getElementById('totalCookies');
         const levelDisplay = document.getElementById('level');
@@ -844,13 +387,13 @@
         const cpsDisplay = document.getElementById('cps');
         const leaderboardContainer = document.getElementById('leaderboard');
 
-        cookieBtn.addEventListener('click', async function(e) {
-            if (!gameStateManager) return;
+        // 클릭 이벤트
+        cookieBtn.addEventListener('click', function(e) {
+            const gain = gameState.cookiePerClick;
+            gameState.totalCookies += gain;
+            gameState.clickCount++;
 
-            const gain = gameStateManager.get('cookiePerClick');
-            gameStateManager.increment('totalCookies', gain);
-            gameStateManager.increment('clickCount', 1);
-
+            // 쿠키 획득 애니메이션
             const rect = cookieBtn.getBoundingClientRect();
             const floatingText = document.createElement('div');
             floatingText.className = 'cookie-gain';
@@ -865,30 +408,33 @@
             updateLeaderboard();
         });
 
+        // 레벨업 비용 계산 함수
         function getLevelUpCost() {
-            if (!gameStateManager) return 100;
-            return Math.floor(100 * Math.pow(5, gameStateManager.get('cookiePerClick') - 1));
+            return Math.floor(100 * Math.pow(5, gameState.level - 1));
         }
 
+        // 알바고용 비용 계산 함수
+        const autoCosts = [200, 500, 1000, 5000, 10000, 200000, 400000, 500000];
         function getAutoProductionCost() {
-            if (!gameStateManager) return 200;
-            return gameStateManager.get('autoProductionCost');
+            if (gameState.autoUpgradeCount < autoCosts.length) {
+                return autoCosts[gameState.autoUpgradeCount];
+            } else {
+                return 1000000;
+            }
         }
 
+        // 레벨업 비용 및 증가량
         const levelIncrements = [1, 3, 5, 10, 20, 50, 110];
 
+        // 레벨업 버튼
         document.getElementById('levelUpBtn').addEventListener('click', function() {
-            if (!gameStateManager) return;
-
             const cost = getLevelUpCost();
-            if (gameStateManager.get('totalCookies') >= cost) {
-                gameStateManager.increment('totalCookies', -cost);
-                const currentLevel = gameStateManager.get('cookiePerClick');
-                gameStateManager.set('level', currentLevel + 1);
-
-                const incrementIndex = currentLevel - 1;
+            if (gameState.totalCookies >= cost) {
+                gameState.totalCookies -= cost;
+                gameState.level++;
+                const incrementIndex = gameState.level - 2;
                 if (incrementIndex >= 0 && incrementIndex < levelIncrements.length) {
-                    gameStateManager.increment('cookiePerClick', levelIncrements[incrementIndex]);
+                    gameState.cookiePerClick += levelIncrements[incrementIndex];
                 }
 
                 const levelUpText = document.createElement('div');
@@ -905,49 +451,41 @@
             }
         });
 
+        // 자동 생산 업그레이드
+        const autoIncrements = [1, 3, 6, 10, 20, 30, 40, 50];
         document.getElementById('autoBtn').addEventListener('click', function() {
-            if (!gameStateManager) return;
-
             const cost = getAutoProductionCost();
-            if (gameStateManager.get('totalCookies') >= cost) {
-                gameStateManager.increment('totalCookies', -cost);
-                let autoProduction = gameStateManager.get('autoProduction');
-                if (autoProduction === 0) {
-                    autoProduction = 1;
+            if (gameState.totalCookies >= cost) {
+                gameState.totalCookies -= cost;
+                let increment;
+                if (gameState.autoUpgradeCount < autoIncrements.length) {
+                    increment = autoIncrements[gameState.autoUpgradeCount];
                 } else {
-                    autoProduction *= 2;
+                    increment = 100;
                 }
-                gameStateManager.set('autoProduction', autoProduction);
-                gameStateManager.set('autoProductionCost', Math.floor(gameStateManager.get('autoProductionCost') * 5));
+                gameState.autoProduction += increment;
+                gameState.autoUpgradeCount++;
                 updateDisplay();
                 updateLeaderboard();
             }
         });
 
+        // 자동 생산
         setInterval(() => {
-            if (gameStateManager) {
-                gameStateManager.increment('totalCookies', gameStateManager.get('autoProduction'));
-                updateDisplay();
-                updateLeaderboard();
-            }
+            gameState.totalCookies += gameState.autoProduction;
+            updateDisplay();
+            updateLeaderboard();
         }, 1000);
 
-        // 주기적으로 리더보드 갱신
-        setInterval(() => {
-            if (gameStateManager) {
-                updateLeaderboard();
-            }
-        }, 5000);
-
+        // 화면 업데이트
         function updateDisplay() {
-            if (!gameStateManager) return;
+            totalCookiesDisplay.textContent = Math.floor(gameState.totalCookies);
+            levelDisplay.textContent = gameState.cookiePerClick;
+            clickCountDisplay.textContent = gameState.clickCount;
+            cookiePerClickDisplay.textContent = gameState.cookiePerClick;
+            cpsDisplay.textContent = gameState.autoProduction;
 
-            totalCookiesDisplay.textContent = Math.floor(gameStateManager.get('totalCookies'));
-            levelDisplay.textContent = gameStateManager.get('cookiePerClick');
-            clickCountDisplay.textContent = gameStateManager.get('clickCount');
-            cookiePerClickDisplay.textContent = gameStateManager.get('cookiePerClick');
-            cpsDisplay.textContent = gameStateManager.get('autoProduction');
-
+            // 버튼 비용 및 활성화/비활성화 업데이트
             const levelUpCost = getLevelUpCost();
             const autoProductionCost = getAutoProductionCost();
             document.getElementById('levelUpBtn').innerHTML = `
@@ -958,33 +496,52 @@
                 알바고용 (초당 1)<br>
                 <span class="upgrade-cost">필요: ${autoProductionCost} 🐵</span>
             `;
-            document.getElementById('levelUpBtn').disabled = gameStateManager.get('totalCookies') < levelUpCost;
-            document.getElementById('autoBtn').disabled = gameStateManager.get('totalCookies') < autoProductionCost;
+            document.getElementById('levelUpBtn').disabled = gameState.totalCookies < levelUpCost;
+            document.getElementById('autoBtn').disabled = gameState.totalCookies < autoProductionCost;
         }
 
-        async function updateLeaderboard() {
-            if (!gameStateManager) return;
+        // 리더보드 업데이트
+        function updateLeaderboard() {
+            const players = JSON.parse(localStorage.getItem('players')) || [];
 
-            const leaderboard = await API.getLeaderboard();
+            // 현재 플레이어 찾기 및 업데이트
+            let currentPlayerIndex = players.findIndex(p => p.name === gameState.playerName);
+            if (currentPlayerIndex === -1) {
+                players.push({
+                    name: gameState.playerName,
+                    cookies: gameState.totalCookies
+                });
+            } else {
+                players[currentPlayerIndex].cookies = gameState.totalCookies;
+            }
 
+            // 원숭이 개수 순으로 정렬
+            players.sort((a, b) => b.cookies - a.cookies);
+
+            // 상위 10명만 유지
+            if (players.length > 10) {
+                players = players.slice(0, 10);
+            }
+
+            localStorage.setItem('players', JSON.stringify(players));
+
+            // 리더보드 표시
             leaderboardContainer.innerHTML = '';
-            leaderboard.forEach((player, index) => {
+            players.forEach((player, index) => {
                 const item = document.createElement('div');
                 item.className = 'leaderboard-item';
-                if (player.username === currentUsername) {
-                    item.classList.add('current-user');
-                }
                 item.innerHTML = `
                     <span class="leaderboard-rank">#${index + 1}</span>
-                    <span class="leaderboard-name">${player.username}</span>
-                    <span class="leaderboard-level">${Math.floor(player.totalCookies)} 🐵</span>
+                    <span class="leaderboard-name">${player.name}</span>
+                    <span class="leaderboard-level">${Math.floor(player.cookies)} 🐵</span>
                 `;
                 leaderboardContainer.appendChild(item);
             });
         }
 
-        // ===== 초기 로드 =====
-        showLoginPage();
+        // 초기 실행
+        updateDisplay();
+        updateLeaderboard();
     </script>
 </body>
 </html>
