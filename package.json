@@ -1,0 +1,7 @@
+{
+  "name": "monkey-clicker-game",
+  "version": "1.0.0",
+  "description": "Multiplayer Monkey Clicker Game with Netlify Functions",
+  "private": true,
+  "dependencies": {}
+}
