@@ -99,6 +99,11 @@
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .toggle-text {
             text-align: center;
             margin-top: 20px;
@@ -250,7 +255,7 @@
                     <label for="loginPassword">비밀번호</label>
                     <input type="password" id="loginPassword" required>
                 </div>
-                <button type="submit">로그인</button>
+                <button type="submit" id="loginBtn">로그인</button>
             </form>
 
             <div class="toggle-text">
@@ -278,7 +283,7 @@
                     <label for="signupPasswordConfirm">비밀번호 확인</label>
                     <input type="password" id="signupPasswordConfirm" required>
                 </div>
-                <button type="submit">회원가입</button>
+                <button type="submit" id="signupBtn">회원가입</button>
             </form>
 
             <div class="toggle-text">
@@ -314,15 +319,7 @@
     </div>
 
     <script>
-        // 사용자 데이터 관리
-        function getUsersData() {
-            const data = localStorage.getItem('users');
-            return data ? JSON.parse(data) : {};
-        }
-
-        function saveUsersData(users) {
-            localStorage.setItem('users', JSON.stringify(users));
-        }
+        const API_BASE = '/.netlify/functions';
 
         function getCurrentUser() {
             return localStorage.getItem('currentUser');
@@ -336,7 +333,6 @@
             localStorage.removeItem('currentUser');
         }
 
-        // 게임 점수 관리
         function getGameScore(username) {
             const scores = JSON.parse(localStorage.getItem('gameScores') || '{}');
             return scores[username] || { wins: 0, losses: 0, draws: 0 };
@@ -348,7 +344,6 @@
             localStorage.setItem('gameScores', JSON.stringify(scores));
         }
 
-        // 에러 메시지 표시
         function showError(elementId, message) {
             const errorElement = document.getElementById(elementId);
             errorElement.textContent = message;
@@ -358,7 +353,6 @@
             }, 3000);
         }
 
-        // 성공 메시지 표시
         function showSuccess(elementId, message) {
             const successElement = document.getElementById(elementId);
             successElement.textContent = message;
@@ -368,38 +362,46 @@
             }, 3000);
         }
 
-        // 로그인 처리
-        function handleLogin(event) {
+        async function handleLogin(event) {
             event.preventDefault();
 
             const username = document.getElementById('loginUsername').value;
             const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
 
-            const users = getUsersData();
+            loginBtn.disabled = true;
 
-            if (!users[username]) {
-                showError('loginError', '존재하지 않는 아이디입니다.');
-                return;
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setCurrentUser(username);
+                    switchToGame();
+                    document.getElementById('loginUsername').value = '';
+                    document.getElementById('loginPassword').value = '';
+                } else {
+                    showError('loginError', data.error || '로그인 실패');
+                }
+            } catch (error) {
+                showError('loginError', '서버 연결 오류');
+            } finally {
+                loginBtn.disabled = false;
             }
-
-            if (users[username] !== password) {
-                showError('loginError', '비밀번호가 올바르지 않습니다.');
-                return;
-            }
-
-            setCurrentUser(username);
-            switchToGame();
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
         }
 
-        // 회원가입 처리
-        function handleSignup(event) {
+        async function handleSignup(event) {
             event.preventDefault();
 
             const username = document.getElementById('signupUsername').value;
             const password = document.getElementById('signupPassword').value;
             const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+            const signupBtn = document.getElementById('signupBtn');
 
             if (username.length < 3) {
                 showError('signupError', '아이디는 3글자 이상이어야 합니다.');
@@ -416,34 +418,41 @@
                 return;
             }
 
-            const users = getUsersData();
+            signupBtn.disabled = true;
 
-            if (users[username]) {
-                showError('signupError', '이미 존재하는 아이디입니다.');
-                return;
+            try {
+                const response = await fetch(`${API_BASE}/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccess('signupSuccess', '회원가입이 완료되었습니다! 로그인해주세요.');
+                    setTimeout(() => {
+                        document.getElementById('signupUsername').value = '';
+                        document.getElementById('signupPassword').value = '';
+                        document.getElementById('signupPasswordConfirm').value = '';
+                        switchToLogin();
+                    }, 2000);
+                } else {
+                    showError('signupError', data.error || '회원가입 실패');
+                }
+            } catch (error) {
+                showError('signupError', '서버 연결 오류');
+            } finally {
+                signupBtn.disabled = false;
             }
-
-            users[username] = password;
-            saveUsersData(users);
-
-            showSuccess('signupSuccess', '회원가입이 완료되었습니다! 로그인해주세요.');
-
-            setTimeout(() => {
-                document.getElementById('signupUsername').value = '';
-                document.getElementById('signupPassword').value = '';
-                document.getElementById('signupPasswordConfirm').value = '';
-                switchToLogin();
-            }, 2000);
         }
 
-        // 로그아웃 처리
         function handleLogout() {
             clearCurrentUser();
             switchToLogin();
             document.getElementById('resultDisplay').innerHTML = '<div class="result-text">시작하려면 아래에서 선택하세요</div><div class="score-text" id="scoreDisplay">승리: 0 | 패배: 0 | 무승부: 0</div>';
         }
 
-        // 화면 전환
         function switchToLogin() {
             document.getElementById('loginContainer').classList.add('active');
             document.getElementById('signupContainer').classList.remove('active');
@@ -466,7 +475,6 @@
             updateScoreDisplay();
         }
 
-        // 게임 로직
         function playGame(userChoice) {
             const choices = ['바위', '보', '보'];
             const computerChoice = choices[Math.floor(Math.random() * 3)];
@@ -531,7 +539,6 @@
             document.getElementById('scoreDisplay').textContent = `승리: ${score.wins} | 패배: ${score.losses} | 무승부: ${score.draws}`;
         }
 
-        // 페이지 로드시 확인
         window.addEventListener('load', function() {
             const currentUser = getCurrentUser();
             if (currentUser) {
